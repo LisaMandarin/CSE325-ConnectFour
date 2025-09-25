@@ -1,12 +1,14 @@
 ﻿@page "/"
+@rendermode InteractiveServer
+@using System.Drawing
 
 <PageTitle>Index</PageTitle>
 
 <div class="color-selection">
-    <form @onsubmit="HandlePlayer1Color" @onsubmit:preventDefault>
+    <div>
         <label for="player1-colors">Player 1 Color</label>
-        <select name="player1-colors" id="player1-colors" @bind="player1Color">
-            <option>choose a color</option>
+        <select name="player1-colors" id="player1-colors" @bind="player1Selection">
+            <option value="">choose a color</option>
             <option value="red">red</option>
             <option value="orange">orange</option>
             <option value="yellow">yellow</option>
@@ -15,13 +17,12 @@
             <option value="purple">purple</option>
             <option value="black">black</option>
         </select>
-        <button type="submit">Pick</button>
-    </form>
+    </div>
 
-    <form @onsubmit="HandlePlayer2Color" @onsubmit:preventDefault>
+    <div>
         <label for="player2-colors">Player 2 Color</label>
-        <select name="player2-colors" id="player2-colors" @bind="player2Color">
-            <option>choose a color</option>
+        <select name="player2-colors" id="player2-colors" @bind="player2Selection">
+            <option value="">choose a color</option>
             <option value="red">red</option>
             <option value="orange">orange</option>
             <option value="yellow">yellow</option>
@@ -30,34 +31,39 @@
             <option value="purple">purple</option>
             <option value="black">black</option>
         </select>
-        <button type="submit">Pick</button>
-    </form>
+        
+    </div>
 </div>
 
 <Board @rendermode="InteractiveServer" 
-    BoardColor="System.Drawing.Color.Black"
-    Player1Color="@Player1Selection"
-    Player2Color="@Player2Selection"
+    BoardColor="Color.Black"
+    Player1Color="@player1Color"
+    Player2Color="@player2Color"
     />
 
 @code {
-    private string player1Color;
-    private string player2Color;
+    private string player1Selection = "";
+    private string player2Selection = "";
 
-    private System.Drawing.Color Player1Selection => string.IsNullOrWhiteSpace(player1Color)
-        ? System.Drawing.Color.Green
-        : System.Drawing.ColorTranslator.FromHtml(player1Color);
+    private Color player1Color => GetColorFromSelection(player1Selection, Color.Red);
+    private Color player2Color => GetColorFromSelection(player2Selection, Color.Blue);
 
-    private System.Drawing.Color Player2Selection => string.IsNullOrWhiteSpace(player2Color)
-        ? System.Drawing.Color.Purple
-        : System.Drawing.ColorTranslator.FromHtml(player2Color);
-
-    private void HandlePlayer1Color()
+    private Color GetColorFromSelection(string color, Color defaultColor)
     {
-        StateHasChanged();
-    }
-    private void HandlePlayer2Color()
-    {
-        StateHasChanged();
+        if (string.IsNullOrWhiteSpace(color))
+        {
+            return defaultColor;
+        }
+        return color switch
+        {
+            "red" => Color.Red,
+            "orange" => Color.Orange,
+            "yellow" => Color.Yellow,
+            "green" => Color.Green,
+            "blue" => Color.Blue,
+            "purple" => Color.Purple,
+            "black" => Color.Black,
+            _ => defaultColor
+        };
     }
 }
