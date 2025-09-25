@@ -2,8 +2,62 @@
 
 <PageTitle>Index</PageTitle>
 
+<div class="color-selection">
+    <form @onsubmit="HandlePlayer1Color" @onsubmit:preventDefault>
+        <label for="player1-colors">Player 1 Color</label>
+        <select name="player1-colors" id="player1-colors" @bind="player1Color">
+            <option>choose a color</option>
+            <option value="red">red</option>
+            <option value="orange">orange</option>
+            <option value="yellow">yellow</option>
+            <option value="green">green</option>
+            <option value="blue">blue</option>
+            <option value="purple">purple</option>
+            <option value="black">black</option>
+        </select>
+        <button type="submit">Pick</button>
+    </form>
+
+    <form @onsubmit="HandlePlayer2Color" @onsubmit:preventDefault>
+        <label for="player2-colors">Player 2 Color</label>
+        <select name="player2-colors" id="player2-colors" @bind="player2Color">
+            <option>choose a color</option>
+            <option value="red">red</option>
+            <option value="orange">orange</option>
+            <option value="yellow">yellow</option>
+            <option value="green">green</option>
+            <option value="blue">blue</option>
+            <option value="purple">purple</option>
+            <option value="black">black</option>
+        </select>
+        <button type="submit">Pick</button>
+    </form>
+</div>
+
 <Board @rendermode="InteractiveServer" 
     BoardColor="System.Drawing.Color.Black"
-    Player1Color="System.Drawing.Color.Green"
-    Player2Color="System.Drawing.Color.Purple"
+    Player1Color="@Player1Selection"
+    Player2Color="@Player2Selection"
     />
+
+@code {
+    private string player1Color;
+    private string player2Color;
+
+    private System.Drawing.Color Player1Selection => string.IsNullOrWhiteSpace(player1Color)
+        ? System.Drawing.Color.Green
+        : System.Drawing.ColorTranslator.FromHtml(player1Color);
+
+    private System.Drawing.Color Player2Selection => string.IsNullOrWhiteSpace(player2Color)
+        ? System.Drawing.Color.Purple
+        : System.Drawing.ColorTranslator.FromHtml(player2Color);
+
+    private void HandlePlayer1Color()
+    {
+        StateHasChanged();
+    }
+    private void HandlePlayer2Color()
+    {
+        StateHasChanged();
+    }
+}
